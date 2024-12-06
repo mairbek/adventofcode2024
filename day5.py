@@ -1,10 +1,6 @@
-from operator import contains
 import sys
 from collections import defaultdict
 from functools import cmp_to_key
-
-from numpy import pi
-
 
 before = defaultdict(set)
 for line in sys.stdin:
