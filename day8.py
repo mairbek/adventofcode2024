@@ -24,18 +24,15 @@ for a in points:
         for pj in range(pi + 1, pn):
             i, j = points[a][pi]
             k, l = points[a][pj]
-            di = k - i
-            dj = l - j
-            ii = i
-            jj = j
+            di, dj = k - i, l - j
+            ii, jj = i, j
             while ii >= 0 and ii < n and jj >= 0 and jj < m:
                 if visited[ii][jj] == '.':
                     visited[ii][jj] = '#'
                     result += 1
                 ii -= di
                 jj -= dj
-            ii = k
-            jj = l
+            ii, jj = k, l
             while ii >= 0 and ii < n and jj >= 0 and jj < m:
                 if visited[ii][jj] == '.':
                     visited[ii][jj] = '#'
