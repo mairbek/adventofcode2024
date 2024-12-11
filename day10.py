@@ -7,7 +7,7 @@ for line in sys.stdin:
 n = len(grid)
 m = len(grid[0])
 
-def runSearch(si, sj):
+def runSearch(si, sj, track_visited=True):
     visited = [[0 for _ in range(m)] for _ in range(n)]
     q = [(si, sj, [])]
     result = 0
@@ -15,7 +15,8 @@ def runSearch(si, sj):
         i, j, ll = q.pop()
         if visited[i][j] == 1:
             continue
-        visited[i][j] = 1
+        if track_visited:
+            visited[i][j] = 1
         if grid[i][j] == 9:
             result += 1
             continue
@@ -34,5 +35,5 @@ result = 0
 for i in range(n):
     for j in range(m):
         if grid[i][j] == 0:
-            result += runSearch(i, j)
+            result += runSearch(i, j, False)
 print(result)
