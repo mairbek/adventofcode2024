@@ -1,5 +1,4 @@
 import sys
-from functools import lru_cache
 
 nums = []
 for line in sys.stdin:
@@ -7,9 +6,12 @@ for line in sys.stdin:
     break
 n = len(nums)
 
-@lru_cache(maxsize=None)  # No limit on the cache size
+cache = {}
 def update_nums(num, b, n):
     nn = n - b
+    key = (num, nn)
+    if key in cache:
+        return cache[key]
     for i in range(nn):
         s = str(num)
         if num == 0:
@@ -21,9 +23,11 @@ def update_nums(num, b, n):
             result = 0
             result += update_nums(l, b + i + 1, n)
             result += update_nums(r, b + i + 1, n)
+            cache[key] = result
             return result
         else:
             num *= 2024
+    cache[key] = 1
     return 1
 
 r = 0
