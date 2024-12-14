@@ -30,37 +30,19 @@ for line in sys.stdin:
             prizes.append((x, y))
     i += 1
 
-print(aa, bb, prizes)
+def cramer_2x2(a1, b1, c1, a2, b2, c2):
+    # Calculate determinants
+    det_A = a1 * b2 - a2 * b1
+    if det_A == 0:
+        return None
+    det_x = c1 * b2 - c2 * b1
+    det_y = a1 * c2 - a2 * c1
+    if det_x % det_A != 0 or det_y % det_A != 0:
+        return None
+    x = det_x // det_A
+    y = det_y // det_A
+    return x, y
 
-def gcd_extended(a, b):
-    if b == 0:
-        return a, 1, 0
-    g, x1, y1 = gcd_extended(b, a % b)
-    x = y1
-    y = x1 - (a // b) * y1
-    return g, x, y
-
-def solve_diophantine(a, b, c):
-    """
-    Solves ax + by = c.
-    Returns a particular solution (x0, y0) and the general formula.
-    """
-    g, x0, y0 = gcd_extended(a, b)
-
-    # Check if the equation is solvable
-    if c % g != 0:
-        raise ValueError("No solution exists")
-
-    # Scale the solution for c
-    scale = c // g
-    x0 *= scale
-    y0 *= scale
-
-    # The general solution coefficients
-    x_coeff = b // g
-    y_coeff = -a // g
-
-    return g, x0, y0, x_coeff, y_coeff
 
 n = len(aa)
 result = 0
@@ -75,19 +57,11 @@ for i in range(n):
     b = bx - by
     c = nx - ny
     print(a, b, c)
-    xx = solve_diophantine(a, b, c)
+    xx = cramer_2x2(ax, bx, nx, ay, by, ny)
     if xx is None:
         print('No solution')
     else:
-        g, x0, y0, xc, yc = xx
-        up = (nx - x0*ax - bx*y0)
-        down = (xc*ax + yc*bx)
-        if up % down != 0:
-            print('No solution')
-            continue
-        t = up // down
-        xx = x0 + t*xc
-        yy = y0 + t*yc
-        print(xx, yy)
-        result += xx * 3 + yy
+        x, y = xx
+        print(x, y)
+        result += x * 3 + y
 print(result)
