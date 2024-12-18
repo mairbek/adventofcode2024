@@ -1,4 +1,5 @@
 import sys
+from collections import deque
 
 def run(a, b, c, program):
     output = []
@@ -63,4 +64,22 @@ for line in lines:
         program = list(map(int, prog_str.split(",")))
 
 result = run(a, b, c, program)
-print(','.join([str(i) for i in result]))
+
+q = deque()
+q.append((0, 0))
+while q:
+    a, ii = q.popleft()
+    print(ii, a)
+    if ii == len(program):
+        print(ii, a)
+        break
+    sub = program[len(program) - 1 - ii:]
+    for i in range(8):
+        sub_run = run(8*a+i, 0, 0, program)
+        print(ii, a, i, sub_run, sub)
+        if sub_run == sub:
+            q.append((8 * a + i, ii + 1))
+
+
+# result = run(32*8*8+16*8+64, b, c, program)
+# print(','.join([str(i) for i in result]))
