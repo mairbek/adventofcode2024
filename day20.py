@@ -85,6 +85,7 @@ def md_neighbours(i, j, n, m, d):
             if 0 <= x < n and 0 <= y < m:
                 yield x, y
 
+# TODO(mairbek): can be improved by building the path.
 def num_skips(grid, sd, ed, max_skips, target):
     n = len(grid)
     m = len(grid[0])
