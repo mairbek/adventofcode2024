@@ -36,10 +36,10 @@ for i in range(len(grid)):
 
 # run the loop.
 qi, qj = si, sj
-visited = set()
+visited = [[0 for _ in range(len(grid[0]))] for _ in range(len(grid))]
 distance = 0
 while True:
-    visited.add((qi, qj))
+    visited[qi][qj] = 1
     found = False
     for di, dj in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
         ni, nj = qi + di, qj + dj
@@ -47,7 +47,7 @@ while True:
             continue
         if not grid[ni][nj] in directions:
             continue
-        if (ni, nj) in visited:
+        if visited[ni][nj] != 0:
             continue
         if connected(qi, qj, ni, nj):
             qi, qj = ni, nj
@@ -58,3 +58,20 @@ while True:
     distance += 1
 
 print(math.ceil(distance / 2))
+
+# for each non visited, run point in polygon ray cast.
+total_in = 0
+for i in range(len(visited)):
+    intersections = 0
+    for j in range(len(visited[i])):
+        # 'S' is tricky and might not work. see example 4.
+        if visited[i][j] == 1 and grid[i][j] in ['S', '|', 'L', 'J']:
+            intersections += 1
+        elif visited[i][j] == 0:
+            if intersections % 2 == 1:
+                visited[i][j] = 2
+                total_in += 1
+for row in visited:
+    print(row)
+
+print(total_in)
