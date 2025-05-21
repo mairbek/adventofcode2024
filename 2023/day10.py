@@ -75,3 +75,4 @@ for row in visited:
     print(row)
 
 print(total_in)
+# TODO Reddit's favorite Pick's & Shoelace https://www.reddit.com/r/adventofcode/comments/18evyu9/comment/kcqmhwk/?utm_source=share&utm_medium=web2x&context=3
