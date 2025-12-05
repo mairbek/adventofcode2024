@@ -5,7 +5,6 @@ def main():
     lines = []
     for line in sys.stdin:
         lines.append(line.strip())
-        ranges = []
     # Parse input: ranges, then blank line, then available IDs
     separator_idx = lines.index("")
 
@@ -18,31 +17,20 @@ def main():
     for i in range(separator_idx + 1, len(lines)):
         available_ids.append(int(lines[i]))
 
-    count = 0
-    for id in available_ids:
-        for a, b in ranges:
-            if id >= a and id <= b:
-                count += 1
-                break
+    count = sum(1 for id in available_ids if any(a <= id <= b for a, b in ranges))
     print("part 1", count)
 
     # part two
     ranges.sort()
+    merged = []
+    for start, end in ranges:
+        if merged and start <= merged[-1][1] + 1:
+            # Overlapping or adjacent - merge
+            merged[-1] = (merged[-1][0], max(merged[-1][1], end))
+        else:
+            merged.append((start, end))
 
-    total = 0
-    st = []
-    for i in range(len(ranges)):
-        a, b = ranges[i]
-        total += b - a + 1
-        while st:
-            aa, bb = st.pop()
-            if a <= bb:
-                total -= bb - a + 1
-                if b < bb:
-                    total += bb - b
-                    b = bb
-                a = aa
-        st.append((a, b))
+    total = sum(end - start + 1 for start, end in merged)
     print("part 2", total)
 
 
