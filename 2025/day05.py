@@ -24,7 +24,26 @@ def main():
             if id >= a and id <= b:
                 count += 1
                 break
-    print(count)
+    print("part 1", count)
+
+    # part two
+    ranges.sort()
+
+    total = 0
+    st = []
+    for i in range(len(ranges)):
+        a, b = ranges[i]
+        total += b - a + 1
+        while st:
+            aa, bb = st.pop()
+            if a <= bb:
+                total -= bb - a + 1
+                if b < bb:
+                    total += bb - b
+                    b = bb
+                a = aa
+        st.append((a, b))
+    print("part 2", total)
 
 
 if __name__ == "__main__":
