@@ -3,11 +3,9 @@ import sys
 from functools import reduce
 
 
-def pad_str(s, num):
-    if len(s) >= num:
-        return s
-    n = num - len(s)
-    return s + " " * n
+def get_operator(symbol):
+    """Map operator symbol to function."""
+    return operator.add if symbol == "+" else operator.mul
 
 
 def main():
@@ -21,15 +19,10 @@ def main():
 
     result = 0
     for j in range(len(lines[0])):
-        nums = []
+        columns = []
         for i in range(len(lines) - 1):
-            nums.append(int(lines[i][j]))
-        op = lines[-1][j]
-        if op == "+":
-            op = operator.add
-        elif op == "*":
-            op = operator.mul
-        val = reduce(op, nums)
+            columns.append(int(lines[i][j]))
+        val = reduce(get_operator(lines[-1][j]), columns)
         result += val
     print(f"part1={result}")
 
@@ -65,28 +58,16 @@ def main():
 
     result = 0
     for j in range(len(ops)):
-        nums = []
+        columns = []
         pa, pb = pad_ranges[j]
         for i in range(len(raw_lines) - 1):
-            line = pad_str(raw_lines[i], max_len)
-            nums.append(line[pa:pb][::-1])
-        nums2 = ["" for _ in nums]
+            line = raw_lines[i].ljust(max_len)
+            columns.append(line[pa:pb][::-1])
+        numbers = ["" for _ in columns]
         for x in range(pads[j]):
-            for n in nums:
-                nums2[x] += n[x]
-        op = None
-        default = None
-        if ops[j] == "+":
-            op = operator.add
-            default = 0
-        elif ops[j] == "*":
-            op = operator.mul
-            default = 1
-        else:
-            raise ValueError("wtf operator")
-        nums3 = [default if not n else int(n.strip()) for n in nums2]
-        val = reduce(op, nums3)
-        result += val
+            for n in columns:
+                numbers[x] += n[x]
+        result += reduce(get_operator(ops[j]), [int(n.strip()) for n in numbers if n])
     print(f"part2={result}")
 
 
