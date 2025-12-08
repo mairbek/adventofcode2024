@@ -11,9 +11,8 @@ def parse_input(lines):
 
 def part1(grid):
     """Count the total number of beam splits in the tachyon manifold."""
-    # TODO: Implement solution
-    for row in grid:
-        print("".join(row))
+    # copy cause i modify it below
+    grid = [[grid[i][j] for j in range(len(grid[0]))] for i in range(len(grid))]
     n = len(grid)
     m = len(grid[0])
     si, sj = None, None
@@ -23,12 +22,12 @@ def part1(grid):
                 si, sj = i, j
                 break
     assert si is not None and sj is not None, "Start position not found"
-    print(si, sj)
+    # run bfs from si, sj
     count = 0
     st = []
-    st.append((si, sj, 0))
+    st.append((si, sj))
     while st:
-        i, j, id = st.pop()
+        i, j = st.pop()
         if grid[i][j] == "|":
             continue
         grid[i][j] = "|"
@@ -36,18 +35,36 @@ def part1(grid):
         if i >= n or j < 0 or j >= m:
             continue
         if grid[i][j] == ".":
-            st.append((i, j, id))
+            st.append((i, j))
         elif grid[i][j] == "^":
             count += 1
-            st.append((i, j - 1, id))
-            st.append((i, j + 1, id + 1))
-    for row in grid:
-        print("".join(row))
+            st.append((i, j - 1))
+            st.append((i, j + 1))
     return count
 
 
 def part2(grid):
-    pass
+    n = len(grid)
+    m = len(grid[0])
+    si, sj = None, None
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == "S":
+                si, sj = i, j
+                break
+    assert si is not None and sj is not None, "Start position not found"
+    counts = [[0 for _ in range(m)] for _ in range(n)]
+    counts[si][sj] = 1
+    for i in range(si + 1, n):
+        for j in range(m):
+            if grid[i][j] == ".":
+                counts[i][j] += counts[i - 1][j]
+            elif grid[i][j] == "^":
+                if j >= 1:
+                    counts[i][j - 1] += counts[i - 1][j]
+                if j < m - 1:
+                    counts[i][j + 1] += counts[i - 1][j]
+    return sum(counts[-1])
 
 
 def main():
@@ -61,8 +78,8 @@ def main():
     result1 = part1(grid)
     print(f"part1={result1}")
 
-    # result2 = part2(grid)
-    # print(f"part2={result2}")
+    result2 = part2(grid)
+    print(f"part2={result2}")
 
 
 if __name__ == "__main__":
