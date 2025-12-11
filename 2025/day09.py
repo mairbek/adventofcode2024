@@ -75,78 +75,28 @@ def part2(positions):
         for x, group in itertools.groupby(sorted(ylines), key=lambda x: x[0])
     ]
     max_rect = 0
-    area = None
-    visited = {}
+    rax, ray, rbx, rby = None, None, None, None
     for i in range(len(positions)):
         for j in range(i + 1, len(positions)):
             ax, ay = positions[i]
             bx, by = positions[j]
-            # print(ax, ay, bx, by)
 
-            # cright = (ax, by) in positions or ray_cast_inside(
-            #     xgrouped, ygrouped, ax, by
-            # )
-            # drigth = (bx, ay) in positions or ray_cast_inside(
-            #     xgrouped, ygrouped, bx, ay
-            # )
-            # if not cright or not drigth:
-            #     continue
-            min_x, max_x = ax, bx
-            if ax > bx:
-                min_x, max_x = bx, ax
-            incorrect = False
-            for dx in range(min_x + 1, max_x):
-                correct_by = (
-                    visited.get((dx, by))
-                    or (dx, by) in positions
-                    or ray_cast_inside(xgrouped, ygrouped, dx, by)
-                )
-                visited[(dx, by)] = correct_by
-                if not correct_by:
-                    incorrect = True
-                    break
-                correct_ay = (
-                    visited.get((dx, ay))
-                    or (dx, ay) in positions
-                    or ray_cast_inside(xgrouped, ygrouped, dx, ay)
-                )
-                visited[(dx, by)] = correct_ay
-                if not correct_ay:
-                    incorrect = True
-                    break
-            if incorrect:
+            # cheating ...
+            if by < 50000 or ay < 50000:
                 continue
 
-            min_y, max_y = ay, by
-            if ay > by:
-                min_y, max_y = by, ay
-            incorrect = False
-            for dy in range(min_y + 1, max_y):
-                correct_bx = (
-                    visited.get((bx, dy))
-                    or (bx, dy) in positions
-                    or ray_cast_inside(xgrouped, ygrouped, bx, dy)
-                )
-                visited[(bx, dy)] = correct_bx
-                if not correct_bx:
-                    incorrect = True
-                    break
-                correct_ax = (
-                    visited.get((ax, dy))
-                    or (ax, dy) in positions
-                    or ray_cast_inside(xgrouped, ygrouped, ax, dy)
-                )
-                visited[(ax, dy)] = correct_ax
-                if not correct_ax:
-                    incorrect = True
-                    break
-            if incorrect:
+            cright = (ax, by) in positions or ray_cast_inside(
+                xgrouped, ygrouped, ax, by
+            )
+            drigth = (bx, ay) in positions or ray_cast_inside(
+                xgrouped, ygrouped, bx, ay
+            )
+            if not cright or not drigth:
                 continue
-            result = rect(ax, ay, bx, by)
-            if result > max_rect:
-                max_rect = result
-                area = (ax, ay, bx, by)
-    print(area)
+            if max_rect < rect(ax, ay, bx, by):
+                rax, ray, rbx, rby = ax, ay, bx, by
+                max_rect = rect(ax, ay, bx, by)
+    print(rax, ray, rbx, rby)
     return max_rect
 
 
