@@ -1,4 +1,5 @@
 import sys
+from collections import OrderedDict
 
 
 def parse_input():
@@ -34,14 +35,39 @@ def hash_algorithm(s):
 
 def part1(data):
     """Solve part 1."""
-    print(data)
     return sum([hash_algorithm(s) for s in data.split(",")])
 
 
 def part2(data):
     """Solve part 2."""
-    # TODO: Implement part 2 when available
-    pass
+    boxes = {}
+    for s in data.split(","):
+        if "=" in s:
+            parts = s.split("=")
+            label = parts[0]
+            val = int(parts[1])
+            h = hash_algorithm(label)
+            box = boxes.get(h)
+            if box is None:
+                box = OrderedDict()
+                boxes[h] = box
+            box[label] = val
+        else:
+            label = s[:-1]
+            h = hash_algorithm(label)
+            box = boxes.get(h)
+            if box and label in box:
+                del box[label]
+                if len(box) == 0:
+                    del boxes[h]
+    result = 0
+    for h, box in boxes.items():
+        box_result = 0
+        for i, (_, v) in enumerate(box.items()):
+            box_result += (h + 1) * (i + 1) * v
+        result += box_result
+
+    return result
 
 
 if __name__ == "__main__":
