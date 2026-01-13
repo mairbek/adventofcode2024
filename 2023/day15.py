@@ -1,5 +1,5 @@
 import sys
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
 
 def parse_input():
@@ -40,33 +40,21 @@ def part1(data):
 
 def part2(data):
     """Solve part 2."""
-    boxes = {}
+    boxes = defaultdict(OrderedDict)
     for s in data.split(","):
         if "=" in s:
-            parts = s.split("=")
-            label = parts[0]
-            val = int(parts[1])
-            h = hash_algorithm(label)
-            box = boxes.get(h)
-            if box is None:
-                box = OrderedDict()
-                boxes[h] = box
-            box[label] = val
+            label, val = s.split("=")
+            boxes[hash_algorithm(label)][label] = int(val)
         else:
             label = s[:-1]
             h = hash_algorithm(label)
-            box = boxes.get(h)
-            if box and label in box:
-                del box[label]
-                if len(box) == 0:
-                    del boxes[h]
+            boxes[h].pop(label, None)
+            if not boxes[h]:
+                boxes.pop(h, None)
     result = 0
     for h, box in boxes.items():
-        box_result = 0
         for i, (_, v) in enumerate(box.items()):
-            box_result += (h + 1) * (i + 1) * v
-        result += box_result
-
+            result += (h + 1) * (i + 1) * v
     return result
 
 
