@@ -22,15 +22,12 @@ def part1(grid):
     - Cannot reverse direction
     - Heat loss is the sum of values of blocks entered (excluding starting block)
     """
-    for row in grid:
-        print(row)
-
     n = len(grid)
     m = len(grid[0])
 
     q = []
 
-    for di, dj in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+    for di, dj in [(1, 0), (0, 1)]:
         heapq.heappush(q, (0, di, dj, 1, di, dj, [(di, dj, di, dj, 1)]))
 
     visited = set()
@@ -72,7 +69,7 @@ def part2(grid):
 
     q = []
 
-    for di, dj in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+    for di, dj in [(1, 0), (0, 1)]:
         heapq.heappush(q, (0, di, dj, 1, di, dj, [(di, dj, di, dj, 1)]))
 
     visited = set()
