@@ -8,7 +8,7 @@ def parse_input():
         line = line.strip()
         if not line:
             continue
-        data.append([c for c in line])
+        data.append(list(line))
     return data
 
 
@@ -29,12 +29,6 @@ def reflect(c, di, dj):
         # up (-1,0) -> left (0,-1)
         return dj, di
     return di, dj
-
-
-def split(di, dj):
-    if di == 0:
-        return (1, 0), (-1, 0)
-    return (0, 1), (0, -1)
 
 
 def energized(grid, si=0, sj=0, di=0, dj=1):
@@ -88,19 +82,11 @@ def part2(grid):
     m = len(grid[0])
     result = 0
     for i in range(n):
-        v = energized(grid, i, 0, 0, 1)
-        if v > result:
-            result = v
-        v = energized(grid, i, m - 1, 0, -1)
-        if v > result:
-            result = v
+        result = max(result, energized(grid, i, 0, 0, 1))
+        result = max(result, energized(grid, i, m - 1, 0, -1))
     for j in range(m):
-        v = energized(grid, 0, j, 1, 0)
-        if v > result:
-            result = v
-        v = energized(grid, n - 1, j, -1, 0)
-        if v > result:
-            result = v
+        result = max(result, energized(grid, 0, j, 1, 0))
+        result = max(result, energized(grid, n - 1, j, -1, 0))
     return result
 
 
