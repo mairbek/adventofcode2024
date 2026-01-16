@@ -1,5 +1,6 @@
 import sys
 from dataclasses import dataclass
+from typing import Callable
 
 
 @dataclass(frozen=True)
@@ -118,7 +119,59 @@ def part1(workflows, parts):
 def part2(workflows, parts):
     """Solve part 2."""
     # TODO: Implement part 2
-    return 0
+    q = []
+    # (state, (xmin, xmax), (mmin, mmax), (amin, amax), (smin, smax))
+    q.append(
+        ("in", {"x": (1, 4000), "m": (1, 4000), "a": (1, 4000), "s": (1, 4000)}, ["in"])
+    )
+    visited = set()
+    result = []
+    while q:
+        state, pr, path = q.pop()
+        candidate = (state, tuple(sorted(pr.items())))
+        if candidate in visited:
+            continue
+        visited.add(candidate)
+        if state == "R":
+            continue
+        if state == "A":
+            result.append((path, pr))
+            continue
+        pr = pr.copy()
+        for rule in workflows[state]:
+            new_path = path.copy()
+            if not rule.condition:
+                new_path.append(rule.destination)
+                q.append((rule.destination, pr, new_path))
+                continue
+            new_pr = pr.copy()
+            category, cond, expected = rule.condition
+            a, b = new_pr[category]
+            aa, bb = a, b
+            if cond == ">":
+                a = max(a, expected + 1)
+                bb = a - 1
+            if cond == "<":
+                b = min(b, expected - 1)
+                aa = b + 1
+            if a >= b:
+                continue
+            new_pr[category] = (a, b)
+            new_path.append(rule.destination)
+            q.append((rule.destination, new_pr, new_path))
+            if aa >> bb:
+                break
+            pr[category] = (aa, bb)
+    val_sum = 0
+    for path, pr in result:
+        val = 1
+        val *= pr["x"][1] - pr["x"][0] + 1
+        val *= pr["m"][1] - pr["m"][0] + 1
+        val *= pr["a"][1] - pr["a"][0] + 1
+        val *= pr["s"][1] - pr["s"][0] + 1
+        val_sum += val
+        print(path, val, pr)
+    return val_sum
 
 
 if __name__ == "__main__":
