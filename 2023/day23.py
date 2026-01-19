@@ -107,21 +107,26 @@ def compress_grid(grid):
 
 def part2(grid):
     graph, start, end = compress_grid(grid)
-
     max_path = 0
+    visited = set()
+    q = [(start, 0, False)]
 
-    def dfs(node, visited, dist):
-        nonlocal max_path
+    while q:
+        node, dist, is_cleanup = q.pop()
+        if is_cleanup:
+            visited.remove(node)
+            continue
+        if node in visited:
+            continue
+        visited.add(node)
         if node == end:
             max_path = max(max_path, dist)
-            return
+            visited.remove(node)
+            continue
+        q.append((node, dist, True))
         for next_node, edge_dist in graph[node]:
             if next_node not in visited:
-                visited.add(next_node)
-                dfs(next_node, visited, dist + edge_dist)
-                visited.remove(next_node)
-
-    dfs(start, {start}, 0)
+                q.append((next_node, dist + edge_dist, False))
     return max_path
 
 
