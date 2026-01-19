@@ -82,7 +82,7 @@ def part2(grid):
     The reachable count grows quadratically with the number of grid-widths traveled.
     We sample at n=0,1,2 (steps 65, 196, 327) and fit a quadratic.
     """
-    rows, cols = len(grid), len(grid[0])
+    rows, _cols = len(grid), len(grid[0])
 
     # Find starting position
     si, sj = -1, -1
