@@ -20,6 +20,7 @@
             python3Packages.z3-solver
             python3Packages.pip
             python3Packages.numpy
+            python3Packages.networkx
           ];
 
           shellHook = ''
